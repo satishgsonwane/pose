@@ -123,9 +123,13 @@ dmypy.json
 .pyre/
 
 # Project specific
-assets/frames/
-runs/
-results/
+*.jpg
+*.png
+*.jpeg
+*.gif
+*.bmp
+*.tiff
+*.webp
 *.avi
 *.mp4
 *.mov
@@ -134,6 +138,8 @@ results/
 *.flv
 *.wmv
 *.webm
+*.ndjson
+*.npz
 
 # Large model files (uncomment if you don't want to track them)
 *.pt
