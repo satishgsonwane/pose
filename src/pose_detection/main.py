@@ -27,7 +27,7 @@ from nats.aio.client import Client as NATS
 from queue import Queue, Empty
 import yaml
 import urllib.request
-
+from pose_to_hdgcn import *
 # Default model download URL (YOLOv8n-pose as example)
 DEFAULT_MODEL_URL = "https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo11x-pose.pt"
 
@@ -269,6 +269,7 @@ class PoseSink:
             print(f"[SINK] bad message skipped: {e}")
 
 # ---------- NPZ Builders (joints + bones) ----------
+# NOTE: See pose_to_hdgcn.py for reusable pose-to-HDG-CN conversion utilities (buffer, normalization, remapping, etc.)
 def make_windows(n: int, T: int, stride: int) -> List[Tuple[int,int]]:
     if n == 0: return []
     if n <= T: return [(0, n)]
