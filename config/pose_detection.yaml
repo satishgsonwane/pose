@@ -1,0 +1,11 @@
+# Pose Detection Pipeline Configuration
+model_path: assets/models/yolo11x-pose.pt
+device: cuda:0
+conf_threshold: 0.5
+iou_threshold: 0.7
+target_fps: 30.0
+nats_url: nats://127.0.0.1:4222
+nats_topic: pose.detections
+output_ndjson: results/detections.ndjson
+output_npz: results/OZ_Football.npz
+output_npz_bones: results/OZ_Football_with_bones.npz

@@ -1,0 +1,45 @@
+flowchart TD
+    %% Real-time Pipeline
+    A[Video Streams<br/>RTSP / Files] --> B[YOLO-Pose Inference<br/>17/25 joints<br/>Multi-Person Tracker]
+    B --> C[Real-time Keypoints<br/>@ 50 FPS]
+    C --> D[(Memgraph DB<br/>:Player, :Pose, :Action nodes<br/>:NEXT links for time-ordered poses<br/>Indexed by track_id, timestamp)]
+    
+    %% Classification Loop
+    D --> E[Query last T=64 poses]
+    E --> F[FastAPI /classify endpoint<br/>HD-GCN Inference<br/>Input: C,T,V,M tensor<br/>Output: action label + score]
+    F --> G[Smoothing / Debounce<br/>Hysteresis<br/>Merge short events]
+    G --> H[Write :Action back to Memgraph]
+    H --> D
+    
+    %% Offline Training Pipeline
+    subgraph "OFFLINE TRAINING PIPELINE"
+        I[Raw Game Clips<br/>~30 min] --> J[CVAT Annotation Tool<br/>Track_id + start_frame + end_frame]
+        J --> K[Export CSV / JSON Labels]
+        K --> L[One-hot Encode Actions]
+        L --> M[NPZ Label Builder]
+        M --> N[NPZ Files x, y]
+        N --> O[feeder_football.py]
+        P[NPZ Builder from<br/>Memgraph pose data] --> O
+        O --> Q[HD-GCN Training<br/>Pretrained weights NTU RGB+D 120<br/>Replace final classification layer<br/>Fine-tune on custom dataset]
+        Q --> R[Save fine-tuned model<br/>for serving]
+    end
+    
+    %% Connect training to inference
+    R -.-> F
+    D -.-> P
+    
+    %% Cross-cutting requirements
+    subgraph "CROSS-CUTTING REQUIREMENTS"
+        S[Real-time: 50 FPS end-to-end<br/>Backpressure & batching<br/>Observability: metrics, logs, health checks<br/>Configurable: V=17/25, T=64]
+    end
+    
+    %% Styling
+    classDef realtime fill:#e1f5fe
+    classDef storage fill:#f3e5f5
+    classDef training fill:#fff3e0
+    classDef requirements fill:#e8f5e8
+    
+    class A,B,C,E,F,G,H realtime
+    class D storage
+    class I,J,K,L,M,N,O,P,Q,R training
+    class S requirements
