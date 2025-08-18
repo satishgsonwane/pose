@@ -62,7 +62,8 @@ class RealtimePoseDetector:
         conf_threshold: float = 0.5,
         iou_threshold: float = 0.7,
         device: str = "cuda:0",
-        max_queue_size: int = 100
+        max_queue_size: int = 100,
+        tracker: str = "bytetrack.yaml"
     ):
         self.model_path = model_path
         self.nats_url = nats_url
@@ -72,6 +73,7 @@ class RealtimePoseDetector:
         self.iou_threshold = iou_threshold
         self.device = device
         self.max_queue_size = max_queue_size
+        self.tracker = tracker
 
         # Download model if missing
         download_model_if_missing(model_path)
@@ -104,7 +106,8 @@ class RealtimePoseDetector:
 
     def process_frame(self, frame: np.ndarray, frame_num: int, timestamp: float) -> Optional[Dict[str, Any]]:
         try:
-            results = self.model(frame, conf=self.conf_threshold, iou=self.iou_threshold, verbose=False)
+            # Use tracker from instance variable
+            results = self.model.track(frame, conf=self.conf_threshold, iou=self.iou_threshold, verbose=False, persist=True, tracker=self.tracker)
             if results[0].keypoints is not None and results[0].keypoints.conf is not None:
                 keypoints = results[0].keypoints.xyn.cpu().numpy()  # normalized coordinates
                 confidences = results[0].keypoints.conf.cpu().numpy()
@@ -357,26 +360,28 @@ async def main():
 
     ap = argparse.ArgumentParser()
     # publisher args (same as yours)
-    ap.add_argument("--video", required=True)
+    # ap.add_argument("--video",required=True)
+    ap.add_argument("--video", default=config.get("video", "assets/videos/long.mp4"))
     ap.add_argument("--model", default=config.get("model_path", "assets/models/yolo11x-pose.pt"))
-    ap.add_argument("--video-id", default="realtime")
+    ap.add_argument("--video-id", default=config.get("video_id", "realtime"))
     ap.add_argument("--conf-threshold", type=float, default=config.get("conf_threshold", 0.5))
     ap.add_argument("--iou-threshold", type=float, default=config.get("iou_threshold", 0.7))
     ap.add_argument("--device", default=config.get("device", "cuda:0"))
     ap.add_argument("--target-fps", type=float, default=config.get("target_fps", 30.0))
     ap.add_argument("--nats-url", default=config.get("nats_url", "nats://127.0.0.1:4222"))
     ap.add_argument("--nats-topic", default=config.get("nats_topic", "pose.detections"))
-    ap.add_argument("--max-queue-size", type=int, default=100)
+    ap.add_argument("--max-queue-size", type=int, default=config.get("max_queue_size", 100))
+    ap.add_argument("--tracker", default=config.get("tracker", "bytetrack.yaml"), help="Tracker YAML file (default: bytetrack.yaml)")
 
     # sink + builder args
     ap.add_argument("--ndjson", default=config.get("output_ndjson", "results/detections.ndjson"), help="Output NDJSON file (default: results/detections.ndjson)")
     ap.add_argument("--out-joints", default=config.get("output_npz", "results/OZ_Football.npz"), help="Output NPZ file for joints (default: results/OZ_Football.npz)")
     ap.add_argument("--out-joint-bones", default=config.get("output_npz_bones", "results/OZ_Football_with_bones.npz"), help="Output NPZ file for joints+bones (default: results/OZ_Football_with_bones.npz)")
-    ap.add_argument("--T", type=int, default=64)
-    ap.add_argument("--stride", type=int, default=32)
-    ap.add_argument("--snapshot-sec", type=int, default=0,
+    ap.add_argument("--T", type=int, default=config.get("T", 64))
+    ap.add_argument("--stride", type=int, default=config.get("stride", 32))
+    ap.add_argument("--snapshot-sec", type=int, default=config.get("snapshot_sec", 0),
                     help="If >0, build NPZ snapshots every N seconds (optional).")
-    ap.add_argument("--flush-every", type=int, default=50,
+    ap.add_argument("--flush-every", type=int, default=config.get("flush_every", 50),
                     help="Flush NDJSON file every N messages (set 1 for real-time)")
 
     args = ap.parse_args()
@@ -392,7 +397,7 @@ async def main():
     detector = RealtimePoseDetector(
         model_path=args.model, nats_url=args.nats_url, nats_topic=args.nats_topic,
         video_id=args.video_id, conf_threshold=args.conf_threshold, iou_threshold=args.iou_threshold,
-        device=args.device, max_queue_size=args.max_queue_size
+        device=args.device, max_queue_size=args.max_queue_size, tracker=args.tracker if isinstance(args.tracker, str) else (args.tracker.get('config') if isinstance(args.tracker, dict) else 'bytetrack.yaml')
     )
     sink = PoseSink(nats_url=args.nats_url, topic=args.nats_topic, ndjson_path=args.ndjson, flush_every=args.flush_every)
 

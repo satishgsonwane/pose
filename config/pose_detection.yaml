@@ -1,11 +1,82 @@
 # Pose Detection Pipeline Configuration
+
+# Path to the input video file
+video: assets/videos/long.mp4
+
+# Identifier for the video stream/session
+video_id: realtime
+
+# Maximum number of frames to queue for processing
+max_queue_size: 100
+
+# Number of frames in each NPZ window
+T: 64
+
+# Stride (step size) between NPZ windows
+stride: 32
+
+# Interval (in seconds) to build NPZ snapshots (0 = disabled)
+snapshot_sec: 0
+
+# Number of messages after which NDJSON file is flushed to disk
+flush_every: 50
+
+# Path to the YOLO pose model
 model_path: assets/models/yolo11x-pose.pt
+
+# Device to run inference on (e.g., 'cuda:0' or 'cpu')
 device: cuda:0
+
+# Confidence threshold for pose detection
 conf_threshold: 0.5
+
+# IoU threshold for pose detection
 iou_threshold: 0.7
-target_fps: 30.0
+
+# Target FPS for video processing
+target_fps: 25.0
+
+# NATS server URL for message publishing
 nats_url: nats://127.0.0.1:4222
+
+# NATS topic for pose detections
 nats_topic: pose.detections
+
+# Output NDJSON file for detections
 output_ndjson: results/detections.ndjson
+
+# Output NPZ file for joints
 output_npz: results/OZ_Football.npz
+
+# Output NPZ file for joints+bones
 output_npz_bones: results/OZ_Football_with_bones.npz
+
+# Tracker configuration for YOLO tracking
+tracker:
+  # Type of tracker to use ('botsort' or 'bytetrack')
+  type: "bytetrack"
+  # Path to the tracker YAML configuration file
+  config: "bytetrack.yaml"
+  parameters:
+    # Threshold for the first association during tracking
+    track_high_thresh: 0.5
+    # Threshold for the second association during tracking
+    track_low_thresh: 0.1
+    # Threshold to initialize a new track
+    new_track_thresh: 0.6
+    # Number of frames to keep lost tracks before removing
+    track_buffer: 30
+    # Threshold for matching tracks between frames
+    match_thresh: 0.8
+    # Whether to fuse confidence scores with IoU distances
+    fuse_score: true
+    # Method used for global motion compensation ('orb', 'sift', 'ecc', 'sparseOptFlow', or 'None')
+    gmc_method: "orb"
+    # Minimum IoU required for a valid match with ReID
+    proximity_thresh: 0.5
+    # Minimum appearance similarity required for ReID
+    appearance_thresh: 0.25
+    # Whether to use ReID (only supported by BoT-SORT)
+    with_reid: false
+    # Model to use for ReID; 'auto' uses native features
+    model: "auto"
