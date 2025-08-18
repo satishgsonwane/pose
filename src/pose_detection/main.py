@@ -26,6 +26,21 @@ from ultralytics import YOLO
 from nats.aio.client import Client as NATS
 from queue import Queue, Empty
 import yaml
+import urllib.request
+
+# Default model download URL (YOLOv8n-pose as example)
+DEFAULT_MODEL_URL = "https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo11x-pose.pt"
+
+def download_model_if_missing(model_path: str, url: str = DEFAULT_MODEL_URL):
+    if not os.path.exists(model_path):
+        print(f"[INFO] Model not found at {model_path}. Downloading from {url}...")
+        os.makedirs(os.path.dirname(model_path), exist_ok=True)
+        try:
+            urllib.request.urlretrieve(url, model_path)
+            print(f"[INFO] Model downloaded to {model_path}")
+        except Exception as e:
+            print(f"[ERROR] Failed to download model: {e}")
+            raise
 
 # ---------- Shared config / constants ----------
 V, C, M = 17, 3, 1  # COCO-17, channels=(x,y,conf), single person per sequence
@@ -57,6 +72,9 @@ class RealtimePoseDetector:
         self.iou_threshold = iou_threshold
         self.device = device
         self.max_queue_size = max_queue_size
+
+        # Download model if missing
+        download_model_if_missing(model_path)
 
         # Initialize YOLO model on CUDA
         print(f"[INFO] Loading YOLO pose model on {device}: {model_path}")
