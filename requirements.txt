@@ -1,14 +1,12 @@
-# Core dependencies for Apple Silicon Mac
+# Consolidated requirements for Mac (Apple Silicon and Intel)
+# This file automatically handles architecture-specific dependencies
+
+# Core dependencies (common to all Macs)
 ultralytics>=8.0.0
 opencv-python>=4.8.0
 tqdm>=4.65.0
 nats-py>=2.0.0
 numpy>=1.24.0
-
-# PyTorch for Apple Silicon (MPS support)
-torch>=2.1.0
-torchvision>=0.16.0
-
 PyYAML>=6.0
 
 # Optional dependencies
@@ -16,15 +14,14 @@ pillow>=10.0.0
 matplotlib>=3.7.0
 seaborn>=0.12.0
 
-# (Optional) Jupyter for notebooks
-# notebook
-# jupyterlab
-
-# (Optional) Logging enhancements
-# loguru
-
 # Development dependencies
 pytest>=7.4.0
 black>=23.0.0
 flake8>=6.0.0
 mypy>=1.5.0
+
+# PyTorch dependencies - handled by setup.sh based on architecture
+# Apple Silicon: torch>=2.1.0, torchvision>=0.16.0 (MPS support)
+# Intel Mac: torch>=2.1.0, torchvision>=0.16.0 (CPU/GPU support)
+# Note: PyTorch installation is handled automatically by setup.sh
+# based on detected architecture (arm64 vs x86_64)

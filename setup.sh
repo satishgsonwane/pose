@@ -25,12 +25,14 @@ source venv/bin/activate
 if [[ "$(uname -m)" == "arm64" ]]; then
     echo "🍎 Apple Silicon detected - Installing MPS-optimized PyTorch..."
     pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
-    pip install -r requirements-apple-silicon.txt
 else
     echo "🖥️  Intel Mac detected - Installing standard PyTorch..."
     pip install torch torchvision
-    pip install -r requirements.txt
 fi
+
+# Install common requirements (same for all Mac architectures)
+echo "📦 Installing common dependencies..."
+pip install -r requirements.txt
 
 # Install NATS if Homebrew available
 if command -v brew >/dev/null 2>&1; then

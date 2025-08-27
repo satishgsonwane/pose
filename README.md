@@ -54,7 +54,7 @@ pose/
 ├── docs/                ← Research papers and architecture
 ├── results/             ← Auto-created output files
 ├── setup.sh             ← One-command setup (everything automatic)
-└── requirements-apple-silicon.txt ← Apple Silicon dependencies
+└── requirements.txt     ← Consolidated dependencies for all Macs
 ```
 
 ## 🎬 Video Setup
