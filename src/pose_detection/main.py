@@ -11,7 +11,7 @@ python phase1_combo.py \
   --model assets/models/yolo11x-pose.pt \
   --nats-url nats://127.0.0.1:4222 \
   --nats-topic pose.detections \
-  --device cuda:0 \
+  --device mps \
   --T 64 --stride 32
 # Output files will be written to the results/ directory by default
 """
@@ -28,8 +28,31 @@ from queue import Queue, Empty
 import yaml
 import urllib.request
 from pose_to_hdgcn import *
+
 # Default model download URL (YOLOv8n-pose as example)
 DEFAULT_MODEL_URL = "https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo11x-pose.pt"
+
+def get_optimal_device(device_preference: str = "auto") -> str:
+    """
+    Automatically detect and return the best available device for inference.
+    Priority: MPS (Apple Silicon) > CUDA > CPU
+    """
+    if device_preference == "auto":
+        # Check for Apple Silicon MPS first
+        if hasattr(torch.backends, 'mps') and torch.backends.mps.is_available():
+            return "mps"
+        # Check for CUDA
+        elif torch.cuda.is_available():
+            return "cuda:0"
+        # Fall back to CPU
+        else:
+            return "cpu"
+    elif device_preference == "mps" and hasattr(torch.backends, 'mps') and torch.backends.mps.is_available():
+        return "mps"
+    elif device_preference.startswith("cuda") and torch.cuda.is_available():
+        return device_preference
+    else:
+        return "cpu"
 
 def download_model_if_missing(model_path: str, url: str = DEFAULT_MODEL_URL):
     if not os.path.exists(model_path):
@@ -61,7 +84,7 @@ class RealtimePoseDetector:
         video_id: str,
         conf_threshold: float = 0.5,
         iou_threshold: float = 0.7,
-        device: str = "cuda:0",
+        device: str = "auto",
         max_queue_size: int = 100,
         tracker: str = "bytetrack.yaml"
     ):
@@ -71,17 +94,17 @@ class RealtimePoseDetector:
         self.video_id = video_id
         self.conf_threshold = conf_threshold
         self.iou_threshold = iou_threshold
-        self.device = device
+        self.device = get_optimal_device(device)
         self.max_queue_size = max_queue_size
         self.tracker = tracker
 
         # Download model if missing
         download_model_if_missing(model_path)
 
-        # Initialize YOLO model on CUDA
-        print(f"[INFO] Loading YOLO pose model on {device}: {model_path}")
+        # Initialize YOLO model on optimal device
+        print(f"[INFO] Loading YOLO pose model on {self.device}: {model_path}")
         self.model = YOLO(model_path)
-        self.model.to(device)
+        self.model.to(self.device)
 
         # Threading components
         self.frame_queue = Queue(maxsize=max_queue_size)
@@ -367,7 +390,7 @@ async def main():
     ap.add_argument("--video-id", default=config.get("video_id", "realtime"))
     ap.add_argument("--conf-threshold", type=float, default=config.get("conf_threshold", 0.5))
     ap.add_argument("--iou-threshold", type=float, default=config.get("iou_threshold", 0.7))
-    ap.add_argument("--device", default=config.get("device", "cuda:0"))
+    ap.add_argument("--device", default=config.get("device", "auto"))
     ap.add_argument("--target-fps", type=float, default=config.get("target_fps", 30.0))
     ap.add_argument("--nats-url", default=config.get("nats_url", "nats://127.0.0.1:4222"))
     ap.add_argument("--nats-topic", default=config.get("nats_topic", "pose.detections"))
@@ -387,12 +410,18 @@ async def main():
 
     args = ap.parse_args()
 
-    # CUDA check
-    if args.device.startswith("cuda") and not torch.cuda.is_available():
-        print("[WARN] CUDA requested but not available; switching to CPU")
-        args.device = "cpu"
+    # Device detection and validation
+    optimal_device = get_optimal_device(args.device)
+    if optimal_device != args.device:
+        print(f"[INFO] Device '{args.device}' not available, using optimal device: {optimal_device}")
+        args.device = optimal_device
+    
+    if args.device == "mps":
+        print(f"[INFO] Using Apple Silicon MPS acceleration")
     elif args.device.startswith("cuda"):
         print(f"[INFO] CUDA: {torch.cuda.get_device_name(0)}")
+    else:
+        print(f"[INFO] Using CPU for inference")
 
     # components
     detector = RealtimePoseDetector(

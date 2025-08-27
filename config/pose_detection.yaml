@@ -1,7 +1,7 @@
 # Pose Detection Pipeline Configuration
 
 # Path to the input video file
-video: assets/videos/long.mp4
+video: assets/videos/long.avi
 
 # Identifier for the video stream/session
 video_id: realtime
@@ -24,8 +24,9 @@ flush_every: 50
 # Path to the YOLO pose model
 model_path: assets/models/yolo11x-pose.pt
 
-# Device to run inference on (e.g., 'cuda:0' or 'cpu')
-device: cuda:0
+# Device to run inference on (e.g., 'mps', 'cpu', or 'cuda:0' for Linux)
+# On Apple Silicon Macs, 'mps' provides GPU acceleration via Metal
+device: mps
 
 # Confidence threshold for pose detection
 conf_threshold: 0.5

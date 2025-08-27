@@ -1,11 +1,14 @@
-# Core dependencies
+# Core dependencies for Apple Silicon Mac
 ultralytics>=8.0.0
 opencv-python>=4.8.0
 tqdm>=4.65.0
 nats-py>=2.0.0
 numpy>=1.24.0
-torch>=2.0.0
-torchvision>=0.15.0
+
+# PyTorch for Apple Silicon (MPS support)
+torch>=2.1.0
+torchvision>=0.16.0
+
 PyYAML>=6.0
 
 # Optional dependencies
