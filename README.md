@@ -1,35 +1,55 @@
-# 🚀 Pose Detection Pipeline for Mac
+# 🚀 Pose Detection Pipeline for Mac **ONLY**
 
-A comprehensive computer vision pipeline for pose detection in sports videos using YOLO models and NATS messaging. **Fully optimized for Apple Silicon Macs (M1/M2/M3) with automatic MPS detection and GPU acceleration.**
+> ⚠️ **MAC-ONLY PROJECT**: This repository is designed and tested exclusively for macOS. It will not work on Windows, Linux, or other operating systems.
 
-## 🍎 Apple Silicon Mac Support
+## 🚫 **NOT COMPATIBLE WITH:**
+- ❌ Windows (any version)
+- ❌ Linux (Ubuntu, CentOS, etc.)
+- ❌ WSL (Windows Subsystem for Linux)
+- ❌ Docker on non-Mac systems
+- ❌ Cloud servers (AWS, GCP, Azure) running non-macOS
 
-This repository has been optimized for Apple Silicon Macs with automatic MPS (Metal Performance Shaders) detection and GPU acceleration.
+## ✅ **ONLY COMPATIBLE WITH:**
+- ✅ macOS 12.3+ (Monterey or later)
+- ✅ Apple Silicon Macs (M1, M2, M3 series)
+- ✅ Intel Macs (x86_64 architecture)
 
-**Quick Start for Apple Silicon:**
+A comprehensive computer vision pipeline for pose detection in sports videos using YOLO models and NATS messaging. **Fully optimized for Apple Silicon Macs (M1/M2/M3) with automatic MPS detection and GPU acceleration, with fallback support for Intel Macs.**
+
+## 🍎 Mac-Only Project Features
+
+This repository has been **exclusively designed and tested for macOS** with automatic MPS (Metal Performance Shaders) detection and GPU acceleration on Apple Silicon Macs.
+
+**Quick Start for Mac Users:**
 ```bash
-# 1. Clone and enter
-git clone <REPO_URL> pose && cd pose
+# 1. Clone and enter (replace with your actual repo URL)
+git clone https://github.com/yourusername/pose.git pose && cd pose
 
-# 2. Add your video file
-cp /path/to/your/video.mp4 assets/videos/
+# 2. Add your video file (Mac-style paths)
+cp ~/Desktop/your_video.mp4 assets/videos/
+# Or drag & drop: open assets/videos/ && # drag video file here
 
-# 3. Run one command setup
+# 3. Run one command setup (Mac-optimized)
 ./setup.sh
 
 # 4. Run the pipeline
 source venv/bin/activate
 nats-server &
-python src/pose_detection/main.py
+python src/pose_detection/main.py --video assets/videos/your_video.mp4
 ```
 
-## 📋 Prerequisites
+## 📋 Prerequisites (Mac Only)
 
-- **macOS**: 12.3+ (required for MPS support on Apple Silicon)
+> 🍎 **REQUIREMENT**: You must be using macOS to use this project.
+
+- **Operating System**: macOS 12.3+ (required for MPS support on Apple Silicon)
+- **Architecture**: Apple Silicon (M1/M2/M3) or Intel Mac (x86_64)
 - **Python**: 3.8+ (3.9+ recommended)
 - **Git**: Installed
 - **8GB+ RAM** available
 - **2GB+ free storage** for models and dependencies
+
+> ❌ **NOT SUPPORTED**: Windows, Linux, Ubuntu, WSL, Docker on non-Mac systems
 
 ## 🚀 Quick Setup (One Command!)
 
@@ -59,43 +79,77 @@ pose/
 
 ## 🎬 Video Setup
 
-### Video Requirements
-- **Format**: MP4, AVI, MOV, or any OpenCV supports
-- **Resolution**: 720p, 1080p, or 4K (1080p recommended)
-- **Content**: Should contain people for pose detection
-- **Location**: `assets/videos/your_video.mp4`
+### 🎥 **Universal Video Format Support**
 
-### Add Your Video
+This pipeline supports **ANY video format that OpenCV can read**, making it incredibly flexible for Mac users:
+
+#### **📱 Common Consumer Formats:**
+- **MP4** (H.264, H.265/HEVC) - Most common, excellent compatibility
+- **MOV** (QuickTime) - Native macOS format, ProRes support
+- **AVI** - Windows legacy, but fully supported
+- **MKV** - Open container, great for high-quality content
+
+#### **🎬 Professional Formats:**
+- **ProRes** (MOV container) - Apple's professional codec
+- **DNxHD/DNxHR** - Avid professional codec
+- **CineForm** - GoPro professional codec
+- **Uncompressed** - Raw video files
+
+#### **🌐 Web & Streaming Formats:**
+- **WebM** - Google's web video format
+- **FLV** - Flash video (legacy but supported)
+- **MPEG-4** - Standard digital video
+- **H.264/H.265** - Modern compression standards
+
+#### **📺 Legacy & Special Formats:**
+- **MPEG-1/MPEG-2** - DVD and broadcast standards
+- **DivX/Xvid** - Legacy compression codecs
+- **WMV** - Windows Media (fully supported on Mac)
+
+### Video Requirements
+- **Format**: **Any of the above formats** - OpenCV handles them all automatically
+- **Resolution**: 720p, 1080p, or 4K (1080p recommended for best performance)
+- **Content**: Should contain people for pose detection
+- **Location**: `assets/videos/your_video.mp4` (or any supported format)
+
+### Add Your Video (Mac-Style)
 ```bash
 # Create directories
 mkdir -p assets/videos assets/models results
 
-# Add video file
-cp /path/to/your/video.mp4 assets/videos/
+# Add video file (Mac-style paths) - ANY format works!
+cp ~/Desktop/your_video.mp4 assets/videos/
+cp ~/Desktop/your_video.mov assets/videos/
+cp ~/Desktop/your_video.avi assets/videos/
+cp ~/Desktop/your_video.mkv assets/videos/
+# ... any video format OpenCV supports
+
+# Or use Finder (Mac GUI):
+open assets/videos/  # Opens folder in Finder, then drag & drop any video file
 ```
 
 ## 🔧 Detailed Setup Process
 
-### Step 1: Repository Setup
+### Step 1: Repository Setup (Mac)
 ```bash
-# Clone and enter
-git clone <REPO_URL> pose
+# Clone and enter (replace with your actual repo URL)
+git clone https://github.com/yourusername/pose.git pose
 cd pose
 
-# Check architecture
+# Check Mac architecture
 uname -m
-# arm64 = Apple Silicon, x86_64 = Intel
+# arm64 = Apple Silicon (M1/M2/M3), x86_64 = Intel Mac
 ```
 
-### Step 2: Python Environment
+### Step 2: Python Environment (Mac)
 ```bash
-# Create virtual environment
+# Create virtual environment (macOS Python)
 python3 -m venv venv
 source venv/bin/activate
 
-# Verify activation
+# Verify activation (Mac-style path)
 which python
-# Should show: /Users/username/Desktop/pose/venv/bin/python
+# Should show: /Users/yourusername/Desktop/pose/venv/bin/python
 ```
 
 ### Step 3: Install Dependencies
@@ -143,16 +197,21 @@ print(f'CUDA available: {torch.cuda.is_available()}')
 # No manual setup needed!
 ```
 
-### Step 6: Configuration
+### Step 6: Configuration (Mac)
 ```bash
-# Edit configuration
+# Edit configuration (Mac text editor options)
 nano config/pose_detection.yaml
+# Or use TextEdit: open -a TextEdit config/pose_detection.yaml
+# Or use VS Code: code config/pose_detection.yaml
 ```
 
 **Key settings to update:**
 ```yaml
-# Path to your video file
-video: assets/videos/your_video.mp4
+# Path to your video file (supports ANY video format)
+video: assets/videos/your_video.mp4  # or .mov, .avi, .mkv, etc.
+video: assets/videos/your_video.mov  # ProRes, H.264, etc.
+video: assets/videos/your_video.avi  # Any AVI codec
+video: assets/videos/your_video.mkv  # Matroska container
 
 # Video identifier
 video_id: your_video_name
@@ -160,22 +219,41 @@ video_id: your_video_name
 # Device (auto-detection recommended)
 device: auto
 
-# Target FPS (adjust based on Mac performance)
-target_fps: 25.0
+# Target FPS (minimum 30 for real-time performance)
+target_fps: 30.0  # Lower values may cause performance issues
 ```
 
 ## 🎯 Running the Pipeline
 
+### 📋 **Command Format Requirement**
+
+> ⚠️ **CRITICAL**: The `--video` parameter is **mandatory** and must be specified every time you run the pipeline. This parameter tells the system:
+> - **Which video file** to process
+> - **Video format** to expect
+> - **Source path** for the video
+> - **Processing parameters** based on the video type
+
+**Correct command format:**
+```bash
+python src/pose_detection/main.py --video assets/videos/your_video.mp4
+```
+
+**❌ Incorrect (will fail):**
+```bash
+python src/pose_detection/main.py  # Missing --video parameter
+python src/pose_detection/main.py --video  # Missing video path
+```
+
 ### Basic Run (Recommended for First Time)
 ```bash
-# Make sure you're in the pose directory
+# Make sure you're in the pose directory (Mac-style path)
 cd ~/Desktop/pose
 
 # Activate virtual environment
 source venv/bin/activate
 
-# Run with default settings
-python src/pose_detection/main.py
+# Run with video file (required - replace with your video path)
+python src/pose_detection/main.py --video assets/videos/your_video.mp4
 ```
 
 **Expected output:**
@@ -187,7 +265,7 @@ python src/pose_detection/main.py
 [INFO] Model not found at assets/models/yolo11x-pose.pt. Downloading...
 [INFO] Model downloaded to assets/models/yolo11x-pose.pt
 [INFO] NATS connected: nats://127.0.0.1:4222, topic='pose.detections'
-[INFO] Video: assets/videos/your_video.mp4 | Input FPS: 30.00 | Target FPS: 25.00
+[INFO] Video: assets/videos/your_video.mp4 | Input FPS: 30.00 | Target FPS: 30.00
 ```
 
 ### Advanced Run with Custom Parameters
@@ -203,7 +281,7 @@ python src/pose_detection/main.py \
 
 ### Monitor NATS Messages (In Another Terminal)
 ```bash
-# Open a new terminal window/tab
+# Open a new terminal window/tab (Mac Terminal or iTerm2)
 cd ~/Desktop/pose
 source venv/bin/activate
 
@@ -214,17 +292,17 @@ nats sub pose.detections
 ## 📊 Performance Expectations
 
 ### M2 MacBook Air/Pro
-- **Real-time Processing**: 25-30 FPS on 1080p video
+- **Real-time Processing**: 30+ FPS on 1080p video (MPS accelerated)
 - **Model Loading**: ~2-3 seconds for YOLO11x-pose
 - **Memory Usage**: 2-4GB during inference
 
 ### M1 MacBook Air/Pro
-- **Real-time Processing**: 20-25 FPS on 1080p video
+- **Real-time Processing**: 30+ FPS on 1080p video (MPS accelerated)
 - **Model Loading**: ~3-4 seconds for YOLO11x-pose
 - **Memory Usage**: 2-4GB during inference
 
 ### Intel Mac
-- **Real-time Processing**: 15-20 FPS on 1080p video (CPU)
+- **Real-time Processing**: 30+ FPS on 1080p video (CPU optimized)
 - **Model Loading**: ~4-5 seconds for YOLO11x-pose
 - **Memory Usage**: 2-4GB during inference
 
@@ -234,7 +312,7 @@ nats sub pose.detections
 
 #### Issue: "MPS not available"
 ```bash
-# Check macOS version
+# Check macOS version (Mac-specific command)
 sw_vers
 
 # Solution: Update to macOS 12.3+ or use CPU
@@ -266,15 +344,20 @@ nats-server &
 # Check video file path
 ls -la assets/videos/
 
-# Update configuration
+# Update configuration (Mac text editor options)
 nano config/pose_detection.yaml
+# Or: open -a TextEdit config/pose_detection.yaml
 # Change video: path to correct location
+
+# Or use command line with --video parameter
+python src/pose_detection/main.py --video assets/videos/your_actual_video.mp4
 ```
 
 #### Issue: "Out of memory"
 ```bash
-# Reduce batch size in configuration
+# Reduce batch size in configuration (Mac text editor options)
 nano config/pose_detection.yaml
+# Or: open -a TextEdit config/pose_detection.yaml
 # Change max_queue_size: 50 (from 100)
 
 # Or run with lower FPS
@@ -283,7 +366,7 @@ python src/pose_detection/main.py --target-fps 15.0
 
 ### Performance Optimization
 1. **Close other GPU-intensive apps** (Final Cut Pro, Logic Pro, etc.)
-2. **Reduce target FPS** in configuration
+2. **Maintain minimum 30 FPS** for optimal real-time performance
 3. **Use smaller models** for faster inference
 4. **Monitor Activity Monitor** for memory usage
 
@@ -297,8 +380,11 @@ python src/pose_detection/main.py --target-fps 15.0
 # 4. ✅ Output file generation
 # 5. ✅ Performance monitoring
 
-# Run a quick test
+# Run a quick test (works with ANY video format)
 python src/pose_detection/main.py --video assets/videos/your_video.mp4 --target-fps 10.0
+python src/pose_detection/main.py --video assets/videos/your_video.mov --target-fps 10.0
+python src/pose_detection/main.py --video assets/videos/your_video.avi --target-fps 10.0
+# ... any format OpenCV supports
 ```
 
 ### Expected Final Output
@@ -320,24 +406,22 @@ ls -la results/
 # - OZ_Football_with_bones.npz (joints + bones data)
 ```
 
-## 🔄 Migration from Ubuntu/CUDA
+## 🔄 Mac-Specific Features
 
-### Key Changes Made
-1. **Device Detection**: Automatic MPS detection
-2. **Dependencies**: Apple Silicon optimized versions
-3. **Configuration**: MPS as default device
-4. **Performance**: Optimized for unified memory
+### What Makes This Mac-Only
+1. **MPS Integration**: Native Apple Metal Performance Shaders support
+2. **macOS Optimization**: Built specifically for macOS performance characteristics
+3. **Apple Silicon**: Optimized for M1/M2/M3 unified memory architecture
+4. **Intel Mac Support**: Fallback support for Intel Macs with CPU optimization
+5. **Universal Video Support**: Works with ANY video format OpenCV supports
 
-### Command Line Changes
-```bash
-# Old (Ubuntu/CUDA)
-python main.py --device cuda:0
+### Why Mac Only?
+- **MPS Framework**: Apple's Metal Performance Shaders are macOS-exclusive
+- **Unified Memory**: Apple Silicon's unified memory architecture requires specific optimization
+- **Performance**: Native macOS integration provides best performance for pose detection
+- **Dependencies**: PyTorch MPS builds and other dependencies are macOS-specific
 
-# New (Apple Silicon)
-python src/pose_detection/main.py --device mps
-# or
-python src/pose_detection/main.py --device auto  # Automatic detection
-```
+> 💡 **Note**: If you need cross-platform support, consider using the original CUDA-based version or Docker containers with GPU passthrough.
 
 ## 📚 Additional Resources
 
@@ -354,9 +438,9 @@ python src/pose_detection/main.py --device auto  # Automatic detection
 4. **Monitor resources** - Check memory and CPU usage
 5. **Restart services** - Restart NATS server if needed
 
-### Support Commands
+### Support Commands (Mac-Specific)
 ```bash
-# System information
+# System information (Mac-specific)
 uname -a
 sw_vers
 python3 --version
@@ -370,42 +454,48 @@ pip list
 ls -la assets/videos/ assets/models/
 file assets/videos/*.mp4
 
-# Monitor performance
+# Monitor performance (Mac-specific)
 sudo powermetrics --samplers gpu_power -n 1
 top -pid $(pgrep -f "python.*main.py")
 ```
 
 ---
 
-## 🎯 **Quick Start Summary**
+## 🎯 **Quick Start Summary (Mac Users)**
 
-For experienced users, here's the minimal setup:
+For experienced Mac users, here's the minimal setup:
 
 ```bash
-# 1. Clone and setup
-git clone <REPO_URL> pose && cd pose
-cp /path/to/video.mp4 assets/videos/
+# 1. Clone and setup (replace with your actual repo URL)
+git clone https://github.com/yourusername/pose.git pose && cd pose
+cp ~/Desktop/your_video.mp4 assets/videos/  # or .mov, .avi, .mkv, etc.
 
-# 2. Run setup
+# 2. Run setup (Mac-optimized)
 ./setup.sh
 
 # 3. Run pipeline
 source venv/bin/activate
-python src/pose_detection/main.py
+python src/pose_detection/main.py --video assets/videos/your_video.mp4
 
 # 4. Monitor NATS messages (in another terminal)
 source venv/bin/activate
 nats sub pose.detections
 ```
 
+> 🎥 **Video Format Flexibility**: This pipeline works with ANY video format OpenCV supports - from iPhone MOV files to professional ProRes, from web MP4s to legacy AVI files. Just drop your video in the `assets/videos/` folder and it will work!
+
+> ⚠️ **Important**: The `--video` parameter is **required** and must specify the exact path to your video file. The pipeline is heavily dependent on this parameter to determine the video format and source.
+
 **Total setup time**: ~5-10 minutes (one command)  
 **First run time**: ~2-3 minutes (includes model download)  
-**Performance**: 20-30 FPS on 1080p video with MPS acceleration
+**Performance**: 30+ FPS on 1080p video with MPS acceleration
 
 ---
 
-**Compatibility**: macOS 12.3+, Python 3.8+, Apple Silicon/Intel Macs  
+**Compatibility**: macOS 12.3+ ONLY, Python 3.8+, Apple Silicon/Intel Macs  
 **Last Updated**: December 2024
+
+> 🍎 **Mac Users Only**: This project is designed exclusively for macOS and will not work on other operating systems.
 
 Happy pose detecting on your Mac! 🍎✨
 

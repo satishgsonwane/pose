@@ -1,3 +1,7 @@
+# MAC-ONLY REQUIREMENTS
+# This file is designed exclusively for macOS users
+# Do not use on Windows, Linux, or other operating systems
+# 
 # Consolidated requirements for Mac (Apple Silicon and Intel)
 # This file automatically handles architecture-specific dependencies
 

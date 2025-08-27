@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# 🚀 One-Command Pose Detection Pipeline Setup
-# Just run this script and it does everything automatically!
+# 🚀 One-Command Pose Detection Pipeline Setup for Mac
+# Just run this script and it does everything automatically on your Mac!
 # Only requirement: Place your video file in assets/videos/ before running
 
-echo "🚀 Setting up pose detection pipeline in one command..."
+echo "🚀 Setting up pose detection pipeline for Mac in one command..."
 
 # Create directories
 mkdir -p assets/videos assets/models results
@@ -64,13 +64,13 @@ else
 fi
 
 echo ""
-echo "🎉 Setup Complete! 🎉"
+echo "🎉 Mac Setup Complete! 🎉"
 echo ""
-echo "🚀 To run the pose detection pipeline:"
+echo "🚀 To run the pose detection pipeline on your Mac:"
 echo "1. source venv/bin/activate"
 echo "2. python src/pose_detection/main.py"
 echo ""
-echo "📱 TO LISTEN TO NATS MESSAGES (in another terminal):"
+echo "📱 TO LISTEN TO NATS MESSAGES (in another Mac terminal):"
 echo "   cd $(pwd)"
 echo "   source venv/bin/activate"
 echo "   nats sub pose.detections"
@@ -83,4 +83,4 @@ echo ""
 echo "🔍 Monitor pipeline progress in the main terminal"
 echo "🔍 Monitor NATS messages in the second terminal"
 echo ""
-echo "Happy pose detecting! 🍎✨"
+echo "Happy pose detecting on your Mac! 🍎✨"
